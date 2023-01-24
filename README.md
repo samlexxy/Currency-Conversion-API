@@ -34,10 +34,12 @@ you will need to add the key to the headers of your requests.
     Endpoint example: http://localhost:8000/convert?amount=1&from_currency=USD&to_currency=NGN
     Request example: GET http://localhost:8000/convert?amount=1&from_currency=USD&to_currency=NGN
     Headers example: access_token: 3JSkskkd044kSKDKDKDKK8888D
+    
 `/currencies`:
     Endpoint example: http://localhost:8000/currencies
     Request example: GET http://localhost:8000/currencies
     Headers example: access_token: 3JSkskkd044kSKDKDKDKK8888D
+    
 `/history`:
     Endpoint example: http://localhost:8000/history
     Request example: GET http://localhost:8000/history
