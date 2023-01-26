@@ -14,7 +14,7 @@ def xecdapi_call(type, payload = None):
         url = 'https://xecdapi.xe.com/v1/currencies/'
     payload={}
     headers = {
-    'Authorization': 'Basic Y29yZXNpZ2h0ODYwOTE4NTMxOmNvM2dhMmNmN201YzZkaGlmbnZwNjdwZDk3'
+    'Authorization': f'Basic {KEY}'
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
@@ -23,7 +23,7 @@ def xecdapi_call(type, payload = None):
 
 app = FastAPI()
 api_keys = [
-    "3JSkskkd044kSKDKDKDKK8888D",
+    f"{KEY}",
 ] 
 
 conversations = []
