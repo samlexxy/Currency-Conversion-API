@@ -1,53 +1,19 @@
-import requests
 from fastapi import FastAPI, Depends, Security, HTTPException
 from fastapi.security.api_key import APIKeyHeader, APIKey
 from starlette.status import HTTP_403_FORBIDDEN
-
-
-def xecdapi_call(type, payload = None):
-    if type == 'convert' and payload:
-        to_currency = payload['to']
-        from_currency = payload['from']
-        amount = payload['amount']
-        url = f'https://xecdapi.xe.com/v1/convert_from/?from={from_currency}&to={to_currency}&amount={amount}'
-    elif type == 'currencies':
-        url = 'https://xecdapi.xe.com/v1/currencies/'
-    payload={}
-    headers = {
-    'Authorization': f'Basic {KEY}'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-    return response.json()
-
+import auth, xdci_api
 
 app = FastAPI()
-api_keys = [
-    f"{KEY}",
-] 
-
 conversations = []
 
-
-api_key_header = APIKeyHeader(name="access_token", auto_error=False)
-
-async def get_api_key(api_key_header: str = Security(api_key_header)):
-    if api_key_header in api_keys:
-        return api_key_header   
-    else:
-        raise HTTPException(
-            status_code=HTTP_403_FORBIDDEN, detail="Could not validate API KEY"
-        )
-
-
-
 @app.get("/convert")
-async def get_convert(amount: float, from_currency: str, to_currency: str, api_key: APIKey = Depends(get_api_key)):
-    data = xecdapi_call('convert', {'amount': amount, 'to': to_currency, 'from': from_currency})
+async def get_convert(amount: float, from_currency: str, to_currency: str, api_key: APIKey = Depends(auth.get_api_key)):
+    data = xdci_api.convert('convert', {'amount': amount, 'to': to_currency, 'from': from_currency})
     try:
         converted_amount = round(data['to'][0]['mid'], 4)
     except:
-        return {}
+        return {'Error' : 'Currency Information Not Found'}
+
     rate = round(converted_amount / amount, 4)
     time_of_conversion = data['timestamp']
 
@@ -72,18 +38,21 @@ async def get_convert(amount: float, from_currency: str, to_currency: str, api_k
 
 
 @app.get("/currencies")
-async def get_currencies(api_key: APIKey = Depends(get_api_key)):
-    data = xecdapi_call('currencies')
+async def get_currencies(api_key: APIKey = Depends(auth.get_api_key)):
+    data = xdci_api.convert('currencies')
     item_dict = {}
-
-    if data['currencies']:
-        for currency in data['currencies']:
-            item_dict.update(
-                {currency['currency_name']: currency['iso']}
-            )
+    try:
+        if data['currencies']:
+            for currency in data['currencies']:
+                item_dict.update(
+                    {currency['currency_name']: currency['iso']}
+                )
+    except:
+        if data.get('code') == 9:
+            item_dict = {'Error': 'Expired API KEY'}
     return item_dict
 
 
 @app.get("/history")
-async def read_history(api_key: APIKey = Depends(get_api_key)):
+async def read_history(api_key: APIKey = Depends(auth.get_api_key)):
     return conversations
