@@ -33,22 +33,23 @@ you will need to add the key to the headers of your requests.
 `/convert`:
     Endpoint example: http://localhost:8000/convert?amount=1&from_currency=USD&to_currency=NGN
     Request example: GET http://localhost:8000/convert?amount=1&from_currency=USD&to_currency=NGN
-    Headers example: access_token: 3JSkskkd044kSKDKDKDKK8888D
+    Headers example: access_token: "TOKEN"
     
 `/currencies`:
     Endpoint example: http://localhost:8000/currencies
     Request example: GET http://localhost:8000/currencies
-    Headers example: access_token: 3JSkskkd044kSKDKDKDKK8888D
+    Headers example: access_token: "TOKEN"
     
 `/history`:
     Endpoint example: http://localhost:8000/history
     Request example: GET http://localhost:8000/history
-    Headers example: access_token: 3JSkskkd044kSKDKDKDKK8888D
+    Headers example: access_token: "TOKEN"
 
 Note
 * Make sure you have internet connection as the API relies on the xecdAPI 
 to convert currency.
-* You can edit the api_keys list in main.py to include your own API key.
+* You should use the `.env` to include your own API key.
+* XDCI_API_KEY can be gotten from https://www.xe.com/xecurrencydata/
 * Endpoints are protected with API key auth, so make sure to include 
 the access_token in the headers of your requests.
 
